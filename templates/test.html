@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- Lista de motos -->
+  <div class="col-lg-9">
+    {% if motos %}
+    {% for id, moto in motos.items() %}
+    <div class="card moto-card d-flex flex-column flex-md-row">
+      <img src="{{ url_for('static', filename='img/' + moto.imagen) }}" alt="{{ moto.nombre }}">
+      <div class="moto-info d-flex flex-column justify-content-between">
+        <div>
+          <h5>{{ moto.nombre }}</h5>
+          <p class="mb-2">{{ moto.descripcion }}</p>
+          <ul class="mb-3">
+            {% for c in moto.caracteristicas %}
+            <li>{{ c }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="badge bg-success">Precio por día: ${{ moto.precio_dia }}</span>
+          <a href="{{ url_for('alquilar', id=id) }}" class="btn btn-outline-light btn-sm btn-rentar">Rentar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

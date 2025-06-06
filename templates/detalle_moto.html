@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Moto - MotoRent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <!-- Tu CSS Personalizado para esta página -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/detallemoto.css') }}">
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-motorcycle me-2"></i>MotoRent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Inicio</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if 'username' in session %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Panel de usuario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('mis_alquileres') }}">Mis alquileres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión ({{ session['username'] }})</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Registrarse</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+<section class="product-detail-section py-5">
+  <div class="container">
+    <div class="row">
+      <!-- Columna Izquierda: Galería de Imágenes -->
+      <div class="col-lg-7 mb-4 mb-lg-0 product-gallery">
+        <div class="main-product-image mb-3">
+          <img src="{{ url_for('static', filename='img/' + moto.imagen) }}" class="img-fluid rounded" alt="{{ moto.nombre }}" id="mainImage">
+        </div>
+        <div class="thumbnail-images d-flex justify-content-center">
+          <img src="{{ url_for('static', filename='img/' + moto.imagen) }}" class="img-thumbnail active-thumbnail me-2" alt="Vista 1 de {{ moto.nombre }}" onclick="changeMainImage(this.src)">
+          <img src="{{ url_for('static', filename='img/placeholder_moto_thumb_2.jpg') }}" class="img-thumbnail me-2" alt="Vista 2 de {{ moto.nombre }}" onclick="changeMainImage(this.src)">
+          <img src="{{ url_for('static', filename='img/placeholder_moto_thumb_3.jpg') }}" class="img-thumbnail" alt="Vista 3 de {{ moto.nombre }}" onclick="changeMainImage(this.src)">
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Detalles del Producto -->
+      <div class="col-lg-5 product-info">
+        <nav aria-label="breadcrumb" class="mb-2">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Motos</a></li>
+            <li class="breadcrumb-item"><a href="#">{{ moto.tipo | default('Deportiva') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ moto.nombre }}</li>
+          </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-start">
+          <h1 class="product-title mb-1">{{ moto.nombre }}</h1>
+          <button class="btn btn-outline-secondary btn-wishlist" aria-label="Añadir a favoritos">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+
+        <p class="product-price display-6 fw-bold mb-3">${{ moto.precio_dia }} <span class="fs-6 text-muted fw-normal">/ día</span></p>
+        <p class="text-muted mb-4">{{ moto.descripcion }}</p>
+
+        <!-- Acordeones -->
+        <div class="accordion product-info-accordion mb-4" id="productInfoAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingEspecificaciones">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEspecificaciones">
+                Especificaciones Técnicas
+              </button>
+            </h2>
+            <div id="collapseEspecificaciones" class="accordion-collapse collapse">
+              <div class="accordion-body">
+                <ul class="list-unstyled">
+                  {% for caracteristica in moto.caracteristicas %}
+                    <li class="mb-1"><i class="fas fa-check text-success me-2"></i>{{ caracteristica }}</li>
+                  {% else %}
+                    <li>No hay especificaciones detalladas.</li>
+                  {% endfor %}
+                </ul>
+                {% if moto.descripcion_larga %}
+                <p class="mt-2"><em>{{ moto.descripcion_larga }}</em></p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTarifas">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTarifas">
+                Detalles de Tarifas
+              </button>
+            </h2>
+            <div id="collapseTarifas" class="accordion-collapse collapse">
+              <div class="accordion-body">
+                <div class="row text-center">
+                  <div class="col-6 border-end">
+                    <p class="fs-5 fw-semibold mb-0">${{ moto.precio_hora }}</p>
+                    <p class="text-muted small">Por hora</p>
+                  </div>
+                  <div class="col-6">
+                    <p class="fs-5 fw-semibold mb-0">${{ moto.precio_dia }}</p>
+                    <p class="text-muted small">Por día completo</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HORAS DE ALQUILER -->
+        <div class="row align-items-center mb-4">
+          <div class="col-md-5">
+            <h6 class="text-uppercase small fw-bold mb-0 mb-md-2">Horas de Alquiler:</h6>
+          </div>
+          <div class="col-md-7">
+            <div class="input-group quantity-selector">
+              <button class="btn btn-outline-secondary" type="button" onclick="changeHours(-1)">-</button>
+              <input type="text" class="form-control text-center" value="0" id="hourInput" readonly>
+              <button class="btn btn-outline-secondary" type="button" onclick="changeHours(1)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DÍAS DE ALQUILER -->
+        <div class="row align-items-center mb-4">
+          <div class="col-md-5">
+            <h6 class="text-uppercase small fw-bold mb-0 mb-md-2">Días de Alquiler:</h6>
+          </div>
+          <div class="col-md-7 d-flex gap-2">
+            <input type="date" class="form-control" id="startDate" onchange="updatePreview()">
+            <input type="date" class="form-control" id="endDate" onchange="updatePreview()">
+          </div>
+        </div>
+
+        <!-- PREVIEW EN VIVO -->
+        <div id="preview" class="preview-card d-none mt-3 card p-3 border shadow-sm">
+          <h6 class="fw-bold mb-2">Resumen del Alquiler</h6>
+          <ul class="list-unstyled mb-2" id="previewDetails"></ul>
+          <p class="fw-bold text-end mb-0">Total: <span id="totalAmount"></span></p>
+        </div>
+
+        <div class="d-grid">
+          {% if 'username' in session %}
+          <a href="{{ url_for('alquilar', id=id) }}" class="btn btn-action-primary btn-lg">
+            <i class="fas fa-motorcycle me-2"></i>Alquilar ahora
+          </a>
+          {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-action-primary btn-lg">
+            <i class="fas fa-sign-in-alt me-2"></i>Inicia sesión para alquilar
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    
+    <script>
+    function changeMainImage(src) {
+        document.getElementById('mainImage').src = src;
+        // Lógica para actualizar la miniatura activa
+        document.querySelectorAll('.thumbnail-images .img-thumbnail').forEach(thumb => {
+            thumb.classList.remove('active-thumbnail');
+            if (thumb.src === src) {
+                thumb.classList.add('active-thumbnail');
+            }
+        });
+    }
+
+    function changeHours(change) {
+        const input = document.getElementById("hourInput");
+        let value = parseInt(input.value) + change;
+        value = Math.max(0, value);
+        input.value = value;
+        updatePreview();
+      }
+      
+      function updatePreview() {
+        const precioHora = parseFloat({{ moto.precio_hora }});
+        const precioDia = parseFloat({{ moto.precio_dia }});
+        const horas = parseInt(document.getElementById("hourInput").value);
+        const startDate = new Date(document.getElementById("startDate").value);
+        const endDate = new Date(document.getElementById("endDate").value);
+      
+        let totalHoras = horas * precioHora;
+        let dias = 0;
+        let totalDias = 0;
+      
+        if (!isNaN(startDate) && !isNaN(endDate) && endDate >= startDate) {
+          const diffTime = endDate - startDate;
+          dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          totalDias = dias * precioDia;
+        }
+      
+        const total = totalHoras + totalDias;
+        const preview = document.getElementById("preview");
+        const details = document.getElementById("previewDetails");
+        const totalAmount = document.getElementById("totalAmount");
+      
+        if (horas > 0 || dias > 0) {
+          preview.classList.remove("d-none");
+          details.innerHTML = '';
+          if (horas > 0) details.innerHTML += `<li>${horas} h × $${precioHora} = <strong>$${totalHoras.toFixed(2)}</strong></li>`;
+          if (dias > 0) details.innerHTML += `<li>${dias} día(s) × $${precioDia} = <strong>$${totalDias.toFixed(2)}</strong></li>`;
+          totalAmount.innerText = `$${total.toFixed(2)}`;
+        } else {
+          preview.classList.add("d-none");
+        }
+      }
+      
+      function changeMainImage(src) {
+        document.getElementById("mainImage").src = src;
+      }
+      
+    
+
+    </script>
+
+    <!-- Footer -->
+    <footer class="bg-black text-secondary py-5 footer-coolsite-bs">
+        <div class="container">
+          <div class="row gy-4">
+            <!-- Columna Izquierda: Marca, Descripción, Sociales, Copyright -->
+            <div class="col-lg-4 col-md-12">
+              <h2 class="text-white fw-bold mb-2">MotoRent</h2>
+              <p class="mb-3" style="font-size: 0.95rem; line-height: 1.6;">
+                Tu mejor opción para alquilar motos. Disfruta de la libertad de recorrer la ciudad o hacer turismo de una
+                forma diferente.
+              </p>
+              <div class="mb-3">
+                <a href="#"
+                  class="d-inline-flex align-items-center justify-content-center text-decoration-none text-white me-2 social-icon-bs"
+                  aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"
+                  class="d-inline-flex align-items-center justify-content-center text-decoration-none text-white me-2 social-icon-bs"
+                  aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#"
+                  class="d-inline-flex align-items-center justify-content-center text-decoration-none text-white me-2 social-icon-bs"
+                  aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#"
+                  class="d-inline-flex align-items-center justify-content-center text-decoration-none text-white social-icon-bs"
+                  aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+              </div>
+              <p class="small text-muted mb-0">© 2025 MotoRent. Todos los derechos reservados.</p>
+            </div>
+    
+            <!-- Columna Derecha Contenedora de Cards -->
+            <div class="col-lg-8 col-md-12">
+              <div class="row gy-4">
+                <!-- Card 1: Enlaces de Navegación -->
+                <div class="col-lg-6 col-md-6">
+                  <div class="p-4 rounded-4 h-100 link-card-bs">
+                    <h5 class="text-secondary mb-3">Enlaces</h5>
+                    <ul class="list-unstyled mb-0">
+                      <li class="mb-2"><a href="{{ url_for('index') }}" class="text-white text-decoration-none fw-medium">Inicio</a></li>
+                      <li class="mb-2"><a href="{{ url_for('dashboard') }}" class="text-white text-decoration-none fw-medium">Catálogo</a></li>
+                      <li class="mb-2"><a href="#" class="text-white text-decoration-none fw-medium">Acerca de</a></li>
+                      <li class="mb-2"><a href="#" class="text-white text-decoration-none fw-medium">Contacto</a></li>
+                    </ul>
+                  </div>
+                </div>
+    
+                <!-- Card 2: Enlaces de Soporte/Legales y Contacto -->
+                <div class="col-lg-6 col-md-6">
+                  <div class="p-4 rounded-4 h-100 link-card-bs">
+                    <h5 class="text-secondary mb-3">Soporte y Contacto</h5>
+                    <ul class="list-unstyled mb-0">
+                        <i class="fas fa-envelope me-2 text-secondary pt-1"></i>
+                        <a href="mailto:info@motorent.com"
+                          class="text-white text-decoration-none fw-medium">info@motorent.com</a>
+                      </li>
+                      <li class="mb-2 d-flex align-items-start">
+                        <i class="fas fa-phone-alt me-2 text-secondary pt-1"></i>
+                        <a href="tel:+34123456789" class="text-white text-decoration-none fw-medium">+123 456 789</a>
+                      </li>
+                      <li class="d-flex align-items-start">
+                        <i class="fas fa-map-marker-alt me-2 text-secondary pt-1"></i>
+                        <span class="text-white fw-medium">Carr. Panamericana, Santa Tecla, El Salvador</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- SCRIPT PERSONAL -->
+        <script src="{{ url_for('static', filename='js/personalized/detallemoto.js') }}"></script>
+      
+</body>
+</html>
