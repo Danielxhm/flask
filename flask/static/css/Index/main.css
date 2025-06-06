@@ -1,0 +1,984 @@
+/*============================
+ [Table of CSS]
+
+1. Variables & Reset
+2. Typography
+3. General & Utilities
+4. Navbar
+   4.1 Navbar Desktop
+   4.2 Navbar Mobile (Toggler & Overlay Menu)
+5. Hero Section
+   5.1 Hero Desktop
+   5.2 Hero Mobile
+6. Buttons (General & Effects)
+7. Moto Cards Preview
+8. Testimonials
+9. Brands Marquee
+10. Features Section
+11. Footer
+12. Specific Overrides or GSAP Helpers (if any)
+   12.1 GSAP Animation Pre-Styles
+========================================*/
+
+/*-----------------
+1. Variables & Reset
+-----------------------*/
+:root {
+  --navbar-height-desktop: 70px;
+  --navbar-height-mobile: 60px;
+  --navbar-bg-transparent: rgba(0, 0, 0, 0);
+  --navbar-bg-solid: #0a0a0a;
+  --navbar-bg-mobile: #121212;
+
+  --primary-color: #ff6b00;
+  --secondary-color: #fd7e14;
+
+  --color-light-bg-menu-mobile: #f0f0f0;
+  --text-color-menu-mobile: #1c1c1c;
+  --hamburger-bar-color: #ffffff;
+  --color-primary-accent-menu-mobile: var(--primary-color);
+
+  --slider-speed: 25s;
+
+  --btn-plastic-morph-bg: var(--primary-color);
+  --btn-plastic-morph-hover-bg: var(--secondary-color);
+  --btn-shimmer-bg: #555c66;
+  --btn-shimmer-hover-bg: #666e78;
+
+  /* GSAP Animation Initial States (para animaciones sutiles) */
+  --gsap-subtle-y-offset: 15px;
+  --gsap-initial-rotation-icon: -60deg; /* Reducir un poco la rotación inicial */
+}
+
+/* Reset Básico */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+* {
+  box-sizing: border-box;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/*-----------------
+2. Typography
+-----------------------*/
+body {
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  color: #5a5a5a;
+  background: #ffffff;
+  line-height: 1.6;
+  overflow-x: hidden !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #212529;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+h1 {
+  font-size: 2.5rem;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.75rem;
+}
+h4 {
+  font-size: 1.5rem;
+}
+@media (max-width: 767.98px) {
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.75rem;
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+}
+p {
+  margin-bottom: 1rem;
+}
+a {
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+a:hover {
+  color: var(--secondary-color);
+}
+a:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/*-----------------
+3. General & Utilities
+-----------------------*/
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(255, 107, 0, 0.25);
+}
+.modal-open {
+  overflow: hidden;
+}
+.bg-light {
+  background-color: #f8f9fa !important;
+}
+.text-white-75 {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/*-----------------
+4. Navbar
+-----------------------*/
+/* 4.1 Navbar Desktop */
+#mainNavbarDesktop.navbar.animation1 {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030;
+  height: var(--navbar-height-desktop);
+  background-color: var(--navbar-bg-transparent);
+  transition: background-color 0.3s ease-in-out;
+  /* Pre-ocultación para GSAP manejada en sección 12.1 */
+}
+#mainNavbarDesktop.navbar.animation1.navbar-scrolled-solid {
+  background-color: var(--navbar-bg-solid) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+#logo-desktop img {
+  height: 40px;
+  width: auto;
+}
+#mainNavbarDesktop .nav-link {
+  padding: 0.5rem 1rem !important;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+#mainNavbarDesktop .nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  transition: width 0.3s ease;
+}
+#mainNavbarDesktop .nav-link:hover::after,
+#mainNavbarDesktop .nav-link.active::after {
+  width: 70%;
+}
+#mainNavbarDesktop .nav-link:hover,
+#mainNavbarDesktop .nav-link.active {
+  color: #ffffff !important;
+}
+#mainNavbarDesktop .bx--user,
+#mainNavbarDesktop .bx--bxs-lock {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.3em;
+  vertical-align: text-bottom;
+  background-color: currentColor;
+}
+#mainNavbarDesktop #login-desktop,
+#mainNavbarDesktop #registro-desktop {
+  color: white;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s ease, background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+#mainNavbarDesktop #login-desktop {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+#mainNavbarDesktop #registro-desktop {
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+#mainNavbarDesktop #cerrar-desktop {
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+}
+#mainNavbarDesktop #cerrar-desktop:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+#mainNavbarDesktop #login-desktop:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+#mainNavbarDesktop #registro-desktop:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  transform: translateY(-1px);
+}
+
+/* 4.2 Navbar Mobile */
+#mainNavbarMobile.navbar.animation1-mobile {
+  background-color: var(--navbar-bg-mobile) !important;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1035;
+  height: var(--navbar-height-mobile);
+  /* No necesita pre-ocultación si solo se muestra/oculta por JS de Bootstrap */
+}
+#mainNavbarMobile .navbar-brand img {
+  height: 32px;
+}
+.navbar-toggler-mobile {
+  border: none !important;
+  background: transparent !important;
+  padding: 0.25rem !important;
+  margin: 0;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: inherit;
+  font-size: inherit;
+  text-decoration: none;
+  line-height: 1;
+}
+.navbar-toggler-mobile:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+.hamburger-icon {
+  width: 24px;
+  height: 18px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.hamburger-icon .bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--hamburger-bar-color);
+  border-radius: 1px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Menú Mobile Overlay */
+#mobileMenu.navbar-collapse-mobile {
+  background-color: var(--color-light-bg-menu-mobile);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1040;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden; /* Pre-ocultado para animación GSAP */
+}
+#mobileMenu .mobile-menu-content {
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+}
+#mobileMenu .btn-close-menu {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 1.6rem;
+  color: var(--text-color-menu-mobile);
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  line-height: 1;
+  z-index: 1041;
+}
+#mobileMenu .navbar-nav-mobile {
+  list-style: none;
+  padding-left: 0;
+  width: 100%;
+  text-align: center;
+}
+#mobileMenu .navbar-nav-mobile .nav-link {
+  color: var(--text-color-menu-mobile) !important;
+  font-size: 1.3rem;
+  font-weight: 500;
+  padding: 12px 0;
+  display: block;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  border-bottom: none !important;
+  /* Pre-ocultación para GSAP manejada en sección 12.1 */
+}
+#mobileMenu .navbar-nav-mobile .nav-link:hover,
+#mobileMenu .navbar-nav-mobile .nav-link:focus {
+  color: var(--color-primary-accent-menu-mobile) !important;
+  background-color: transparent !important;
+}
+#mobileMenu .navbar-nav-mobile .nav-link i,
+#mobileMenu .navbar-nav-mobile .nav-link span[class^="bx--"] {
+  margin-right: 10px;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+/*-----------------
+5. Hero Section
+-----------------------*/
+/* Estilos base, sin pre-ocultación aquí ya que no tendrán animación de entrada GSAP */
+.hero-section-desktop {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-section-desktop .background-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("/static/img/hero_section/background.png") no-repeat center
+    center;
+  background-size: cover;
+  z-index: 1;
+}
+.hero-section-desktop .background-image-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.15) 60%,
+    transparent 100%
+  );
+  z-index: 2;
+}
+.hero-section-desktop .hero-content-container {
+  position: relative;
+  z-index: 3;
+  padding-top: calc(var(--navbar-height-desktop) + 2rem);
+  padding-bottom: 4rem;
+}
+.hero-section-desktop .contenido-texto-desktop h1 {
+  position: relative;
+  width: 40rem;
+  right: 10rem;
+  font-size: 2.6rem;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+.hero-section-desktop .contenido-texto-desktop p.lead {
+  position: relative;
+  width: 40rem;
+  right: 10rem;
+  font-size: 1.05rem;
+  margin-bottom: 2.5rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+.hero-section-desktop .hero-image-desktop {
+  position: relative;
+  right: 5rem;
+  top: 3.8rem;
+  max-height: 75vh;
+  object-fit: contain;
+}
+
+#heroDesktopBtn {
+  position: relative;
+  right: 150px;
+}
+
+.hero-section-mobile {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 90vh;
+  padding: 60px 20px !important;
+  color: #ffffff !important;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #1f2240 0%, #3b163d 100%);
+  width: 100%;
+}
+.hero-section-mobile .mobile-text-container {
+  width: 100%;
+  max-width: 90%;
+  text-align: center;
+}
+.hero-section-mobile .mobile-text-container h1 {
+  font-size: 1.9rem !important;
+  color: white;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  margin-bottom: 1rem !important;
+}
+.hero-section-mobile .mobile-text-container p.lead {
+  font-size: 0.9rem !important;
+  line-height: 1.55 !important;
+  margin-bottom: 1.8rem !important;
+  opacity: 0.9;
+}
+
+/*-----------------
+6. Buttons (General & Effects)
+-----------------------*/
+.btn {
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.05rem;
+}
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 107, 0, 0.25);
+}
+
+.btn-effect-3 {
+  background: var(--btn-plastic-morph-bg, var(--primary-color));
+  border-radius: 30px;
+  color: white;
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+.btn-effect-3:hover {
+  background: var(
+    --btn-plastic-morph-hover-bg,
+    var(--secondary-color)
+  ) !important;
+  transform: translateY(-4px) scale(1.03) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-effect-13 {
+  background: var(--btn-shimmer-bg, #555c66);
+  color: white !important;
+  position: relative;
+  overflow: hidden !important;
+  border: none !important;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+.btn-effect-13::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: left 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.btn-effect-13:hover {
+  background-color: var(--btn-shimmer-hover-bg, #666e78) !important;
+  box-shadow: 0 0 20px rgba(200, 200, 255, 0.1) !important;
+}
+.btn-effect-13:hover::after {
+  left: 120%;
+}
+.btn-primary.btn-effect-13 {
+  background: black !important;
+}
+
+/*-----------------
+7. Moto Cards Preview
+-----------------------*/
+/* Icono de estrella pre-transformado para rotación */
+#motos h2 img {
+  transform: rotate(var(--gsap-initial-rotation-icon));
+}
+
+#iconstar {
+  position: relative;
+  top: 40px;
+  left: 340px;
+}
+
+.moto-cards-wrapper {
+  padding: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding-bottom: 1rem;
+}
+.moto-cards-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.moto-card {
+  width: 160px;
+  text-align: center;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+}
+.moto-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+.moto-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.08);
+}
+.moto-card:hover::before {
+  opacity: 0.35;
+}
+.moto-card:nth-child(3n + 1)::before {
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(153, 85, 255, 0.5),
+    transparent 65%
+  );
+}
+.moto-card:nth-child(3n + 1):hover {
+  border-color: rgba(153, 85, 255, 0.3);
+}
+.moto-card:nth-child(3n + 2)::before {
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(30, 136, 229, 0.5),
+    transparent 65%
+  );
+}
+.moto-card:nth-child(3n + 2):hover {
+  border-color: rgba(30, 136, 229, 0.3);
+}
+.moto-card:nth-child(3n + 3)::before {
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(76, 175, 80, 0.5),
+    transparent 65%
+  );
+}
+.moto-card:nth-child(3n + 3):hover {
+  border-color: rgba(76, 175, 80, 0.3);
+}
+.moto-card .card-body {
+  padding: 0.7rem;
+  position: relative;
+  z-index: 1;
+}
+.moto-card .card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+  color: #2c3e50;
+}
+.moto-card .card-price {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 0.4rem;
+}
+.moto-card .card-img-top {
+  width: 100%;
+  height: 90px;
+  object-fit: contain;
+  padding: 3px;
+}
+
+/*-----------------
+8. Testimonials
+-----------------------*/
+.testimonial-card {
+  padding: 1.8rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+.testimonial-card .profile-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  margin-left: auto;
+  margin-right: auto;
+}
+.testimonial-card .quote-svg {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  opacity: 0.1;
+}
+.testimonial-card .testimonial-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 1rem;
+  font-style: italic;
+  min-height: 70px;
+}
+.testimonial-card .stars {
+  color: #ffc107;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+.testimonial-card .client-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.1rem;
+}
+.testimonial-card .client-location {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/*-----------------
+9. Brands Marquee
+-----------------------*/
+.brands-section {
+  overflow: hidden;
+  position: relative;
+  background-color: #f8f9fa;
+}
+.brands-container-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+.brands-list {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  padding: 1rem 0;
+  width: fit-content;
+}
+.brand-item {
+  flex-shrink: 0;
+  width: 130px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+.brand-item:hover {
+  transform: scale(1.1);
+}
+.brand-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: grayscale(80%) opacity(0.7);
+  transition: filter 0.3s ease;
+}
+.brand-item:hover .brand-img {
+  filter: grayscale(0%) opacity(1);
+}
+.brands-container-wrapper::before,
+.brands-container-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.brands-container-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, #f8f9fa 20%, transparent);
+}
+.brands-container-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, #f8f9fa 20%, transparent);
+}
+
+/*-----------------
+10. Features Section
+-----------------------*/
+.features-section .feature-icon {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+.features-section .feature-icon i {
+  transition: transform 0.3s ease-in-out;
+}
+.features-section .col-md-4:hover .feature-icon i {
+  transform: scale(1.1) translateY(-3px) rotate(5deg);
+}
+.features-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.features-section p.text-muted {
+  font-size: 0.9rem;
+}
+
+/*-----------------
+11. Footer
+-----------------------*/
+.footer-coolsite-bs {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+.footer-coolsite-bs .social-icon-bs {
+  width: 40px;
+  height: 40px;
+  background-color: #2d2d2f;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+.footer-coolsite-bs .social-icon-bs:hover {
+  background-color: #3a3a3e;
+}
+.footer-coolsite-bs .link-card-bs {
+  background-color: #1c1c1e;
+}
+.footer-coolsite-bs .link-card-bs a.text-white:hover {
+  color: #ccc !important;
+}
+.footer-coolsite-bs .link-card-bs ul li i.text-secondary {
+  margin-top: 0.15em;
+}
+
+/*-----------------
+12. Specific Overrides or GSAP Helpers (if any)
+-----------------------*/
+/* 12.1 GSAP Animation Pre-Styles - PARA EVITAR FOUC */
+/* Navbar Desktop */
+#mainNavbarDesktop.navbar.animation1 {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-100%);
+}
+
+/* Nav items del menú móvil */
+#mobileMenu .navbar-nav-mobile .nav-link {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(var(--gsap-subtle-y-offset));
+}
+
+/* Para las animaciones sutiles de entrada con scroll. */
+/* Estos se aplicarán a los elementos que tienen la clase .gsap-fade-in-up */
+/* Si no quieres pre-ocultar con CSS y dejar que GSAP.from() lo haga, puedes omitir esto */
+/* y GSAP.from() usará autoAlpha:0 y y:VALOR por defecto. */
+/*
+.gsap-fade-in-up {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(var(--gsap-subtle-y-offset));
+}
+*/
+
+@media (min-width: 769px) {
+  .mymobile {
+    display: none !important;
+  }
+}

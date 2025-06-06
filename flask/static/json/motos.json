@@ -1,0 +1,156 @@
+{
+  "1": {
+    "nombre": "KTM Adventure 390",
+    "marca": "KTM",
+    "tipo": "Aventura",
+    "precio_dia": 80,
+    "descripcion": "Versátil moto de aventura ligera.",
+    "descripcion_larga": "La KTM Adventure 390 es perfecta para los aventureros urbanos y off-road. Compacta, ágil y potente, con suspensión de largo recorrido.",
+    "imagen": "Ktm__Adventure_390.png",
+    "caracteristicas": [
+      "390cc",
+      "43 HP",
+      "158kg",
+      "Suspensión 200 mm",
+      "167 km/h",
+      "Manual",
+      "Año 2024"
+    ]
+  },
+  "2": {
+    "nombre": "Honda Dream 110",
+    "marca": "Honda",
+    "tipo": "Ciudad",
+    "precio_dia": 30,
+    "descripcion": "Eficiente moto urbana para el día a día.",
+    "descripcion_larga": "La Honda Dream 110 es confiable y económica. Ideal para desplazamientos diarios con bajo consumo de combustible.",
+    "imagen": "Honda__Dream_110.png",
+    "caracteristicas": [
+      "110cc",
+      "11 HP",
+      "110 km/h",
+      "Manual",
+      "Año 2016"
+    ]
+  },
+  "3": {
+    "nombre": "Suzuki VStrom 800 DE",
+    "marca": "Suzuki",
+    "tipo": "Adventure Touring",
+    "precio_dia": 120,
+    "descripcion": "Moto trail potente y robusta.",
+    "descripcion_larga": "La VStrom 800 DE combina comodidad y capacidad off-road con tecnología avanzada y excelente manejo en largos recorridos.",
+    "imagen": "Suzuki__Vstrom_800_DE_2024.png",
+    "caracteristicas": [
+      "800cc",
+      "84 HP",
+      "230kg",
+      "Suspensión 170 mm",
+      "191 km/h",
+      "Manual",
+      "Año 2025"
+    ]
+  },
+  "4": {
+    "nombre": "Yamaha N-Max 155",
+    "marca": "Yamaha",
+    "tipo": "Scooter",
+    "precio_dia": 50,
+    "descripcion": "Scooter urbano con estilo moderno.",
+    "descripcion_larga": "El Yamaha N-Max 155 ofrece un balance entre agilidad y confort, ideal para la ciudad con sistema de frenos ABS y diseño atractivo.",
+    "imagen": "Yamaha__NMAX_155_2020.png",
+    "caracteristicas": [
+      "155cc",
+      "15 HP",
+      "130 km/h",
+      "Automático",
+      "Año 2019"
+    ]
+  },
+  "5": {
+    "nombre": "BMW R1200GS",
+    "marca": "BMW",
+    "tipo": "Adventure",
+    "precio_dia": 160,
+    "descripcion": "Referente mundial en motos de aventura.",
+    "descripcion_larga": "La BMW R1200GS es sinónimo de aventura sin límites. Motor potente, gran autonomía y electrónica avanzada para cualquier terreno.",
+    "imagen": "BMW__R1200GS.png",
+    "caracteristicas": [
+      "1200cc",
+      "122 HP",
+      "256kg",
+      "Suspensión 185 mm",
+      "210 km/h",
+      "Manual",
+      "Año 2018"
+    ]
+  },
+  "6": {
+    "nombre": "Suzuki V-Strom 650",
+    "marca": "Suzuki",
+    "tipo": "Touring",
+    "precio_dia": 110,
+    "descripcion": "Trail versátil ideal para largos viajes.",
+    "descripcion_larga": "La Suzuki V-Strom 650 destaca por su fiabilidad y confort, perfecta para viajes largos en carretera o caminos mixtos.",
+    "imagen": "Suzuki__V-strom_650.png",
+    "caracteristicas": [
+      "650cc",
+      "69 HP",
+      "213kg",
+      "Suspensión 170 mm",
+      "185 km/h",
+      "Manual"
+    ]
+  },
+  "7": {
+    "nombre": "Ducati Diavel 1260",
+    "marca": "Ducati",
+    "tipo": "Naked/Crucero",
+    "precio_dia": 180,
+    "descripcion": "Cruiser deportiva con alma Ducati.",
+    "descripcion_larga": "La Diavel 1260 combina potencia extrema con ergonomía cruiser. Diseño agresivo y confort para viajes rápidos.",
+    "imagen": "ducati__diavel.png",
+    "caracteristicas": [
+      "1260cc",
+      "159 HP",
+      "218kg",
+      "Manual"
+    ]
+  },
+  "8": {
+    "nombre": "Ducati Monster 937 SP",
+    "marca": "Ducati",
+    "tipo": "Naked",
+    "precio_dia": 170,
+    "descripcion": "La icónica Monster renovada.",
+    "descripcion_larga": "Con un diseño ligero y agresivo, la Monster 937 SP ofrece una experiencia deportiva pura con electrónica de última generación.",
+    "imagen": "Ducati__Monster_937_SP.png",
+    "caracteristicas": [
+      "937cc",
+      "111 HP",
+      "186kg",
+      "Suspensión 202 mm",
+      "226 km/h",
+      "Manual",
+      "Año 2023"
+    ]
+  },
+  "9": {
+    "nombre": "Ducati Streetfighter V4",
+    "marca": "Ducati",
+    "tipo": "Street/Naked",
+    "precio_dia": 220,
+    "descripcion": "Potencia y agresividad sin carenado.",
+    "descripcion_larga": "La Streetfighter V4 es una bestia en la carretera. Tecnología de MotoGP, control total y una estética feroz.",
+    "imagen": "Ducati__Streetfighter_V4.png",
+    "caracteristicas": [
+      "1100cc",
+      "208 HP",
+      "178kg",
+      "Suspensión 121 mm",
+      "299 km/h",
+      "Manual",
+      "Año 2021"
+    ]
+  }
+}

@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Completo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --body-bg: #f7f7fd;
+        --sidebar-bg: #ffffff;
+        --card-bg: #ffffff;
+        --primary-accent: #7b61ff;
+        --primary-accent-hover: #6a54e0;
+        --primary-accent-rgb: 123, 97, 255;
+        --text-dark: #303044;
+        --text-medium: #6a6a85;
+        --text-light: #a0a0b5;
+        --icon-circle-bg: #eef2f7; /* Un color más neutro para el fondo del icono del stat card */
+        --border-color: #e5e5f0;
+        --border-radius-lg: 16px;
+        --border-radius-md: 12px;
+        --border-radius-sm: 8px;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--body-bg);
+        color: var(--text-dark);
+        display: flex;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background-color: var(--sidebar-bg);
+        padding: 20px 15px; /* Reducido un poco el padding superior */
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1030; /* Encima de la mayoría de los elementos de Bootstrap */
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--border-color);
+        transition: width 0.3s ease-in-out;
+      }
+
+      .sidebar.collapsed {
+        width: 80px;
+      }
+
+      .sidebar .logo-container {
+        padding: 0 10px;
+        margin-bottom: 25px; /* Reducido un poco */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .sidebar .logo-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--primary-accent);
+        font-size: 1.6rem;
+        font-weight: 700;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .sidebar .logo-icon {
+        margin-right: 10px;
+        font-size: 1.8rem;
+        min-width: 24px;
+      }
+
+      .sidebar .logo-text {
+        opacity: 1;
+        transition: opacity 0.2s ease-in-out 0.1s, max-width 0.3s ease-in-out, margin-left 0.3s ease-in-out;
+        max-width: 150px;
+      }
+
+      .sidebar.collapsed .logo-text {
+        opacity: 0;
+        max-width: 0;
+        margin-left: -10px;
+      }
+
+      .sidebar-toggle-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-medium);
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--border-radius-sm);
+        transition: all 0.2s ease;
+        margin-left: auto; /* Por defecto */
+      }
+      .sidebar.collapsed .sidebar-toggle-btn {
+        margin-left: 0; /* Se centra o se ajusta cuando está colapsado */
+      }
+
+      .sidebar-toggle-btn:hover, .sidebar-toggle-btn:focus {
+        background-color: #f0eeff;
+        color: var(--primary-accent);
+        border-color: var(--primary-accent);
+        box-shadow: none;
+        outline: none;
+      }
+      .sidebar-toggle-btn .fa-times {
+        font-size: 1.1rem; /* Para que la X sea un poco más prominente */
+      }
+
+
+      .sidebar-nav {
+        flex-grow: 1;
+      }
+
+      .sidebar-nav .nav-link {
+        color: var(--text-medium);
+        padding: 12px 15px; /* Ajustado el padding horizontal */
+        display: flex;
+        align-items: center;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 8px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .sidebar-nav .nav-link .fas,
+      .sidebar-nav .nav-link .far {
+        margin-right: 15px;
+        width: 24px; /* Ajustado para consistencia */
+        min-width: 24px;
+        text-align: center;
+        font-size: 1.1rem;
+        color: var(--text-light);
+        transition: color 0.2s ease;
+      }
+      .sidebar.collapsed .sidebar-nav .nav-link .fas,
+      .sidebar.collapsed .sidebar-nav .nav-link .far {
+        margin-right: 0; /* Sin margen cuando está colapsado */
+      }
+
+
+      .sidebar-nav .nav-link:hover {
+        background-color: #f0eeff;
+        color: var(--primary-accent);
+      }
+
+      .sidebar-nav .nav-link:hover .fas,
+      .sidebar-nav .nav-link:hover .far {
+        color: var(--primary-accent);
+      }
+
+      .sidebar-nav .nav-link.active {
+        background-color: var(--primary-accent);
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .sidebar-nav .nav-link.active .fas,
+      .sidebar-nav .nav-link.active .far {
+        color: #fff;
+      }
+
+      .sidebar-nav .nav-link span {
+        opacity: 1;
+        /* margin-left: 15px; No es necesario si el icono tiene margin-right */
+        transition: opacity 0.2s ease-in-out 0.1s, max-width 0.3s ease-in-out;
+        max-width: 150px;
+      }
+
+      .sidebar.collapsed .nav-link {
+        justify-content: center;
+        padding-left: 10px; /* Espacio para el ícono */
+        padding-right: 10px;
+      }
+
+      .sidebar.collapsed .nav-link span {
+        opacity: 0;
+        max-width: 0;
+      }
+
+
+      .sidebar-profile {
+        margin-top: auto;
+        padding: 15px;
+        border-top: 1px solid var(--border-color);
+        transition: opacity 0.2s ease-in-out 0.1s, max-height 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out, border 0.3s ease-in-out;
+        overflow: hidden;
+        max-height: 200px;
+      }
+      .sidebar.collapsed .sidebar-profile {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: 0;
+        border-top: none;
+      }
+
+
+      .sidebar-profile .user-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .sidebar-profile .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 12px;
+        background-color: var(--primary-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .sidebar-profile .user-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .sidebar-profile .user-location {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      /* Main Content Area */
+      .main-content {
+        margin-left: 280px;
+        flex-grow: 1;
+        padding: 0;
+        transition: margin-left 0.3s ease-in-out;
+      }
+
+      .sidebar.collapsed + .main-content {
+        margin-left: 80px;
+      }
+
+      /* Topbar */
+      .topbar {
+        background-color: var(--body-bg); /* Era --body-bg, podría ser --card-bg si se prefiere blanco */
+        padding: 20px 30px; /* Reducido padding vertical */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1020; /* Debajo del sidebar si se superponen en móvil */
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Sombra sutil */
+      }
+
+      .topbar .page-title-container .page-title {
+        font-size: 1.5rem; /* Un poco más pequeño */
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0;
+      }
+
+      .topbar .page-title-container .page-subtitle {
+        font-size: 0.85rem; /* Un poco más pequeño */
+        color: var(--text-medium);
+      }
+
+      .topbar .topbar-nav .nav-link {
+        color: var(--text-medium);
+        font-weight: 500;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        font-size: 0.9rem;
+      }
+
+      .topbar .topbar-nav .nav-link:hover {
+        color: var(--primary-accent);
+      }
+
+      .topbar .logout-btn {
+        color: var(--primary-accent);
+        font-weight: 500;
+        text-decoration: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--border-radius-sm);
+      }
+      .topbar .logout-btn:hover {
+        background-color: #f0eeff;
+      }
+
+      .topbar .logout-btn .fas {
+        margin-right: 5px;
+      }
+
+      /* Page Content Area */
+      .page-content {
+        padding: 25px 30px; /* Consistente con topbar */
+      }
+      .section-title { margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+
+      /* Stats Cards */
+      .stats-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-lg);
+        padding: 20px; /* Reducido padding */
+        display: flex;
+        align-items: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 100%; /* Para que todas las cards en una fila tengan la misma altura */
+      }
+
+      .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(var(--primary-accent-rgb), 0.07);
+      }
+
+      .stats-card .icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--border-radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px; /* Reducido margen */
+        font-size: 1.3rem; /* Reducido tamaño de icono */
+        background-color: var(--icon-circle-bg); /* Fondo general */
+      }
+
+      .stats-card .icon-wrapper.text-primary { color: var(--primary-accent); }
+      .stats-card .icon-wrapper.text-info { color: #3b82f6; }
+      .stats-card .icon-wrapper.text-warning { color: #f59e0b; }
+      .stats-card .icon-wrapper.text-success { color: #10b981; }
+
+
+      .stats-card .stat-content .stat-title {
+        font-size: 0.85rem;
+        color: var(--text-medium);
+        margin-bottom: 2px;
+        font-weight: 500;
+      }
+
+      .stats-card .stat-content .stat-value {
+        font-size: 1.75rem; /* Reducido tamaño */
+        font-weight: 700;
+        color: var(--text-dark);
+        line-height: 1.1;
+      }
+
+      .stats-card .stat-content .stat-meta {
+        font-size: 0.75rem;
+        color: var(--text-light);
+        margin-top: 3px;
+      }
+
+      .stats-card .stat-content .stat-change {
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .stats-card .stat-content .stat-change.text-success {
+        color: #10b981 !important;
+      }
+       .stats-card .stat-content .stat-change.text-danger {
+        color: #ef4444 !important;
+      }
+
+      .stats-card .stat-content .stat-change .fas {
+        margin-right: 3px;
+      }
+
+      /* Table Section */
+      .data-table-card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--border-color);
+        overflow: hidden; /* Para que los bordes redondeados afecten a la tabla */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Sombra sutil */
+      }
+
+      .data-table-card .card-header {
+        background-color: transparent; /* Fondo del card header */
+        border-bottom: 1px solid var(--border-color);
+        padding: 15px 25px; /* Reducido padding */
+      }
+
+      .nav-segmented {
+        display: inline-flex;
+        background-color: #f0f0f8;
+        border-radius: var(--border-radius-sm);
+        padding: 5px;
+      }
+
+      .nav-segmented .nav-link {
+        color: var(--text-medium);
+        font-weight: 500;
+        padding: 8px 18px;
+        border-radius: var(--border-radius-sm);
+        margin: 0;
+        border: none;
+        background: none;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+
+      .nav-segmented .nav-link:hover {
+        color: var(--primary-accent);
+      }
+
+      .nav-segmented .nav-link.active {
+        background-color: var(--card-bg);
+        color: var(--primary-accent);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .table {
+        margin-bottom: 0;
+        vertical-align: middle;
+      }
+
+      .table th {
+        font-weight: 600;
+        color: var(--text-medium);
+        font-size: 0.8rem; /* Un poco más pequeño */
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom-width: 1px;
+        border-color: var(--border-color);
+        padding: 12px 25px; /* Reducido padding */
+        white-space: nowrap; /* Evita que los títulos se rompan */
+      }
+
+      .table td {
+        font-size: 0.9rem;
+        padding: 12px 25px; /* Reducido padding */
+        border-color: var(--border-color);
+        color: var(--text-dark);
+      }
+
+      .table .user-avatar-placeholder {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #e0e0ff;
+        color: var(--primary-accent);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        margin-right: 12px;
+      }
+
+      .table .user-name-email .name {
+        font-weight: 600;
+        display: block; /* Para que el email se ponga debajo */
+      }
+
+      .table .user-name-email .email {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      .table .status-text {
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .table .status-text.text-success { color: #10b981 !important; }
+      .table .status-text.text-secondary { color: var(--text-medium) !important; }
+      .table .status-text.text-warning { color: #f59e0b !important; }
+      .table .status-text.text-danger { color: #ef4444 !important; }
+
+
+      .table .status-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+      }
+      .table .status-dot.bg-success { background-color: #10b981 !important; }
+      .table .status-dot.bg-secondary { background-color: var(--text-light) !important; }
+      .table .status-dot.bg-warning { background-color: #f59e0b !important; }
+      .table .status-dot.bg-danger { background-color: #ef4444 !important; }
+
+
+      .table .action-menu .dropdown-toggle {
+        color: var(--text-light);
+        padding: 0.25rem 0.5rem;
+        background: transparent;
+        border: none;
+      }
+
+      .table .action-menu .dropdown-toggle:hover,
+      .table .action-menu .dropdown-toggle:focus {
+        color: var(--primary-accent);
+        background-color: #f0eeff;
+      }
+
+      .table .action-menu .dropdown-toggle::after {
+        display: none;
+      }
+
+      .table .dropdown-menu {
+        border-radius: var(--border-radius-md);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--border-color);
+        font-size: 0.9rem; /* Aplicar tamaño de fuente al menú */
+      }
+
+      .table .dropdown-item {
+        font-size: inherit; /* Heredar tamaño del menú */
+        padding: 8px 15px;
+      }
+
+      .table .dropdown-item .fas {
+        margin-right: 10px;
+        width: 16px;
+        color: var(--text-light);
+      }
+
+      .table .dropdown-item:hover .fas {
+        color: var(--primary-accent);
+      }
+
+      .table .dropdown-item.text-danger .fas {
+        color: #ef4444;
+      }
+      .table .dropdown-item.text-danger:hover .fas {
+        color: #ef4444; /* Mantener color en hover */
+      }
+
+      .table tbody tr:hover {
+        background-color: #f8f8fc;
+      }
+
+      /* Estilos generales para las páginas (secciones) */
+      .page-section {
+        display: none;
+      }
+
+      .page-section.active {
+        display: block;
+      }
+
+      /* Estilos para la página de Perfil */
+      .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        background-color: var(--card-bg);
+        padding: 25px;
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--border-color);
+      }
+
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: var(--primary-accent);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-right: 25px;
+        position: relative;
+      }
+
+      .profile-avatar .edit-avatar-btn {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+        background-color: var(--card-bg);
+        color: var(--primary-accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .profile-info .name {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+      }
+
+      .profile-info .email {
+        font-size: 1rem;
+        color: var(--text-medium);
+        margin-bottom: 10px;
+      }
+
+      .profile-info .role-badge {
+        font-size: 0.8rem;
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: var(--border-radius-sm);
+      }
+
+      .form-section {
+        background-color: var(--card-bg);
+        padding: 25px;
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--border-color);
+        margin-bottom: 30px;
+      }
+
+      .form-section h5 {
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: var(--text-dark);
+      }
+
+      .form-control,
+      .form-select {
+        border-radius: var(--border-radius-md);
+        border: 1px solid var(--border-color);
+        padding: 0.65rem 1rem; /* Ajustado padding */
+        font-size: 0.9rem; /* Ajustado tamaño de fuente */
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--primary-accent);
+        box-shadow: 0 0 0 0.25rem rgba(var(--primary-accent-rgb), 0.15);
+      }
+
+      .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: var(--text-medium);
+        font-size: 0.9rem; /* Consistencia */
+      }
+
+      .btn-primary-custom {
+        background-color: var(--primary-accent);
+        border-color: var(--primary-accent);
+        color: white;
+        padding: 0.65rem 1.5rem;
+        font-weight: 500;
+        border-radius: var(--border-radius-md);
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+      }
+
+      .btn-primary-custom:hover {
+        background-color: var(--primary-accent-hover);
+        border-color: var(--primary-accent-hover);
+        color: white;
+      }
+
+      .btn-outline-secondary-custom {
+        border-color: var(--border-color);
+        color: var(--text-medium);
+        padding: 0.65rem 1.5rem;
+        font-weight: 500;
+        border-radius: var(--border-radius-md);
+      }
+
+      .btn-outline-secondary-custom:hover {
+        background-color: #f8f9fa;
+        color: var(--text-dark);
+      }
+
+      /* Estilos para Modales */
+      .modal-content {
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--border-color);
+      }
+
+      .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.25rem 1.5rem;
+      }
+
+      .modal-title {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .modal-body {
+        padding: 1.5rem;
+      }
+
+      .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 1rem 1.5rem;
+      }
+
+      /* Estilos para página de Inventario */
+      .inventory-item-img-sm {
+        width: 40px; /* Más pequeño */
+        height: 40px;
+        object-fit: cover;
+        border-radius: var(--border-radius-sm);
+        margin-right: 10px;
+        background-color: #eee;
+      }
+
+      .page-header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .page-header-actions h4 {
+        margin-bottom: 0;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      /* Promoción Card */
+      .promotion-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-lg);
+        padding: 20px; /* Reducido padding */
+        margin-bottom: 20px;
+        height: 100%; /* Para igualar alturas en filas */
+      }
+
+      .promotion-card .discount-badge {
+        background-color: var(--primary-accent);
+        color: white;
+        padding: 6px 10px; /* Reducido padding */
+        border-radius: var(--border-radius-md);
+        font-size: 1.2rem; /* Reducido */
+        font-weight: 700;
+        margin-right: 12px;
+      }
+
+      .promotion-card .promo-title {
+        font-size: 1.1rem; /* Reducido */
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+
+      .promotion-card .promo-details {
+        font-size: 0.85rem; /* Reducido */
+        color: var(--text-medium);
+        margin-bottom: 10px;
+      }
+
+      .promotion-card .promo-actions .btn {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+      }
+
+      /* Badge de estado en mis alquileres (ejemplo) */
+      .badge.status-badge {
+          padding: 0.4em 0.75em;
+          font-size: 0.8rem;
+          font-weight: 500;
+      }
+      .badge.status-badge.bg-warning { background-color: #fff3cd !important; color: #664d03 !important; border: 1px solid #ffecb5; }
+      .badge.status-badge.bg-danger { background-color: #f8d7da !important; color: #58151c !important; border: 1px solid #f1c6cb; }
+      .badge.status-badge.status-pending { background-color: #cfe2ff !important; color: #052c65 !important; border: 1px solid #b6d4fe;} /* Para "Aprobado (Próximo)" */
+      .badge.status-badge.status-active { background-color: #d1e7dd !important; color: #0f5132 !important; border: 1px solid #bcd0c7;}
+      .badge.status-badge.status-completed { background-color: #e2e3e5 !important; color: #41464b !important; border: 1px solid #d3d6d8;}
+
+      /* Responsive adjustments */
+      @media (max-width: 992px) {
+        .sidebar {
+          width: 80px; /* Colapsado por defecto en pantallas más pequeñas */
+        }
+        .sidebar:not(.collapsed-manual) .logo-text,
+        .sidebar:not(.collapsed-manual) .nav-link span,
+        .sidebar:not(.collapsed-manual) .sidebar-profile {
+            opacity: 0;
+            max-width: 0;
+        }
+         .sidebar:not(.collapsed-manual) .sidebar-nav .nav-link .fas,
+         .sidebar:not(.collapsed-manual) .sidebar-nav .nav-link .far {
+            margin-right: 0;
+        }
+        .sidebar:not(.collapsed-manual) .sidebar-nav .nav-link {
+            justify-content: center;
+        }
+
+        .main-content {
+          margin-left: 80px;
+        }
+        .sidebar.expanded-manual { /* Si se expande manualmente en pantallas pequeñas */
+            width: 280px;
+        }
+        .sidebar.expanded-manual .logo-text,
+        .sidebar.expanded-manual .nav-link span,
+        .sidebar.expanded-manual .sidebar-profile {
+            opacity: 1;
+            max-width: 150px; /* o lo que necesites */
+        }
+        .sidebar.expanded-manual .sidebar-nav .nav-link .fas,
+        .sidebar.expanded-manual .sidebar-nav .nav-link .far {
+            margin-right: 15px;
+        }
+         .sidebar.expanded-manual .sidebar-nav .nav-link {
+            justify-content: flex-start;
+        }
+        .sidebar.expanded-manual + .main-content {
+            margin-left: 280px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .topbar {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+        }
+        .topbar .page-title-container {
+            margin-bottom: 10px;
+        }
+        .topbar .topbar-nav {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .topbar .topbar-nav .nav-link {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        .page-content {
+            padding: 15px;
+        }
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo-container d-flex justify-content-between align-items-center">
+        <a href="#" class="logo-link">
+          <img src="{{ url_for('static', filename='svg/login.png') }}" alt="Logo Principal" style="width: 190px; filter: invert(1);">
+        </a>
+        <button id="toggleSidebar" class="btn btn-sm sidebar-toggle-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <ul class="nav sidebar-nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#dashboardPage" data-page="dashboardPage">
+            <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#inventoryPage" data-page="inventoryPage">
+            <i class="fas fa-boxes-stacked"></i> <span>Inventario</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#promotionPage" data-page="promotionPage">
+            <i class="fas fa-tags"></i> <span>Promociones</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#adminListPage" data-page="adminListPage">
+            <i class="fas fa-users-cog"></i> <span>Admin List</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#profilePage" data-page="profilePage">
+            <i class="fas fa-user-circle"></i> <span>Perfil</span>
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-profile">
+        <div class="user-info">
+          <div class="user-avatar">AD</div>
+          <div>
+            <div class="user-name">ADMIN</div>
+            <div class="user-location">Santa Tecla, SV</div>
+          </div>
+        </div>
+        <!-- Theme Toggle (Opcional) -->
+        <!--
+        <div class="theme-toggle mt-2">
+            <button class="active" data-theme="light"><i class="fas fa-sun"></i></button>
+            <button data-theme="dark"><i class="fas fa-moon"></i></button>
+        </div>
+        -->
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="page-title-container">
+          <h1 class="page-title">Admin Dashboard</h1>
+          <p class="page-subtitle">Bienvenido de nuevo, ¡gestiona todo desde aquí!</p>
+        </div>
+        <ul class="nav topbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard Cliente</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('mis_alquileres') }}">Mis Reservas</a></li>
+          <li class="nav-item">
+            <a class="nav-link logout-btn" href="{{ url_for('logout') }}">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- Sección de Resumen General -->
+        <div class="row g-3 mb-4"> <!-- g-3 para menos gutter -->
+            <div class="col-xl-3 col-md-6">
+                <div class="stats-card">
+                    <div class="icon-wrapper text-primary"><i class="fas fa-users"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-title">Total de Clientes</div>
+                        <div class="stat-value">{{ total_clientes | default('N/A') }}</div>
+                        <!-- <div class="stat-meta"> <span class="stat-change text-success"><i class="fas fa-arrow-up"></i> 5</span> este mes</div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stats-card">
+                    <div class="icon-wrapper text-info"><i class="fas fa-motorcycle"></i></div> <!-- Cambiado icono -->
+                    <div class="stat-content">
+                        <div class="stat-title">Inventario de Motos</div>
+                        <div class="stat-value">{{ cantidad_motos | default('N/A') }}</div>
+                        <!-- <div class="stat-meta"> <span class="stat-change text-success"><i class="fas fa-arrow-up"></i> 2</span> nuevas</div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stats-card">
+                    <div class="icon-wrapper text-warning"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-title">Reservas Aprobadas</div>
+                        <div class="stat-value">{{ total_reservas | default('N/A') }}</div>
+                        <!-- <div class="stat-meta"> <span class="stat-change text-danger"><i class="fas fa-arrow-down"></i> 1</span> vs ayer</div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stats-card">
+                    <div class="icon-wrapper text-success"><i class="fas fa-dollar-sign"></i></div> <!-- Cambiado icono -->
+                    <div class="stat-content">
+                        <div class="stat-title">Ingresos (Aprobados)</div>
+                        <div class="stat-value">${{ ingresos_totales |abreviar | default(0) }}</div>
+                        <!-- <div class="stat-meta"> <span class="stat-change text-success"><i class="fas fa-arrow-up"></i> 12%</span></div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- SECCIONES DE PÁGINA (CONTENIDO DINÁMICO) -->
+
+        <!-- Dashboard Page Content (Contiene las tablas principales) -->
+        <div id="dashboardPage" class="page-section active">
+          <div class="data-table-card">
+            <div class="card-header">
+              <ul class="nav nav-segmented">
+                <li class="nav-item">
+                  <a class="nav-link active" data-bs-toggle="pill" href="#solicitudesTabContent" role="tab" aria-controls="solicitudesTabContent" aria-selected="true">
+                    Solicitudes Pendientes
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="pill" href="#resumenUsuariosTabContent" role="tab" aria-controls="resumenUsuariosTabContent" aria-selected="false">
+                    Actividad Usuarios
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="pill" href="#adminUsuariosTabContent" role="tab" aria-controls="adminUsuariosTabContent" aria-selected="false">
+                    Gestión de Cuentas
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body p-0">
+              <div class="tab-content">
+                <!-- Solicitudes Pendientes Tab -->
+                <div class="tab-pane fade show active" id="solicitudesTabContent" role="tabpanel">
+                  {% if solicitudes_pendientes %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Usuario</th>
+                          <th>Moto Solicitada</th>
+                          <th>Precio Total</th>
+                          <th>Periodo</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for solicitud in solicitudes_pendientes %}
+                        <tr>
+                          <td>
+                            <div class="user-name-email">
+                              <div class="name">{{ solicitud.nombre_usuario }}</div>
+                              <div class="email">{{ solicitud.email_usuario }}</div>
+                            </div>
+                          </td>
+                          <td>
+                            {{ solicitud.nombre_moto }}
+                            <small class="d-block text-muted">${{ "%.2f"|format(solicitud.precio_moto_dia) }}/día</small>
+                          </td>
+                          <td>${{ "%.2f"|format(solicitud.precio_total_solicitud) }}</td>
+                          <td>
+                            {{ solicitud.duracion }} <br />
+                            <small class="text-muted">
+                              {{ (datetime.fromisoformat(solicitud.fecha_inicio)).strftime('%d/%m/%y') if solicitud.fecha_inicio and datetime else solicitud.fecha_inicio }} -
+                              {{ (datetime.fromisoformat(solicitud.fecha_fin)).strftime('%d/%m/%y') if solicitud.fecha_fin and datetime else solicitud.fecha_fin }}
+                            </small>
+                          </td>
+                          <td>
+                            <form action="{{ url_for('procesar_solicitud_admin', id_alquiler=solicitud.id_alquiler, accion='aprobar') }}" method="POST" class="d-inline me-1">
+                              <button type="submit" class="btn btn-success btn-sm" title="Aprobar">
+                                <i class="fas fa-check"></i>
+                              </button>
+                            </form>
+                            <form action="{{ url_for('procesar_solicitud_admin', id_alquiler=solicitud.id_alquiler, accion='rechazar') }}" method="POST" class="d-inline">
+                              <button type="submit" class="btn btn-danger btn-sm" title="Rechazar">
+                                <i class="fas fa-times"></i>
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% else %}
+                  <p class="text-center p-3">No hay solicitudes de alquiler pendientes.</p>
+                  {% endif %}
+                </div>
+
+                <!-- Resumen Actividad Usuarios Tab -->
+                <div class="tab-pane fade" id="resumenUsuariosTabContent" role="tabpanel">
+                  {% if resumen_usuarios %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Usuario</th>
+                          <th>Estado General</th>
+                          <th class="text-center">Aprobadas</th>
+                          <th class="text-center">Rechazadas</th>
+                          <th class="text-center">Pendientes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for usuario_r in resumen_usuarios %}
+                        <tr>
+                          <td>
+                            <div class="user-name-email">
+                              <div class="name">{{ usuario_r.nombre }}</div>
+                              <div class="email">{{ usuario_r.email }}</div>
+                            </div>
+                          </td>
+                          <td>
+                            {% if usuario_r.estado_general == 'Activo' %}
+                              <span class="status-dot bg-success"></span>
+                              <span class="status-text text-success">Activo</span>
+                            {% else %}
+                              <span class="status-dot bg-secondary"></span>
+                              <span class="status-text text-secondary">Inactivo</span>
+                            {% endif %}
+                          </td>
+                          <td class="text-center">{{ usuario_r.aprobadas }}</td>
+                          <td class="text-center">{{ usuario_r.rechazadas }}</td>
+                          <td class="text-center">{{ usuario_r.pendientes }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% else %}
+                  <p class="text-center p-3">No hay datos de actividad de usuarios.</p>
+                  {% endif %}
+                </div>
+
+                <!-- Gestión de Cuentas Tab -->
+                <div class="tab-pane fade" id="adminUsuariosTabContent" role="tabpanel">
+                  {% if usuarios_para_admin %}
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Usuario</th>
+                          <th>Reservas Aprobadas</th>
+                          <th>Estado (por reservas)</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for usuario in usuarios_para_admin %}
+                        <tr>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <div class="user-avatar-placeholder">
+                                {% set nombre_partes = usuario.nombre.split(' ') %}
+                                {{ nombre_partes[0][0].upper() if nombre_partes[0] else 'U' }}
+                                {% if nombre_partes|length > 1 and nombre_partes[1] %}
+                                  {{ nombre_partes[1][0].upper() }}
+                                {% endif %}
+                              </div>
+                              <div class="user-name-email">
+                                <div class="name">{{ usuario.nombre }}</div>
+                                <div class="email">{{ usuario.email }}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{{ usuario.reservas }}</td>
+                          <td>
+                            {% if usuario.reservas > 0 %}
+                              <span class="status-dot bg-success"></span>
+                              <span class="status-text text-success">Activo</span>
+                            {% else %}
+                              <span class="status-dot bg-secondary"></span>
+                              <span class="status-text text-secondary">Inactivo</span>
+                            {% endif %}
+                          </td>
+                          <td class="action-menu">
+                            <div class="dropdown">
+                              <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-h"></i>
+                              </button>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <form id="deleteForm-{{ usuario.username }}" action="{{ url_for('delete_user_route', username_a_eliminar=usuario.username) }}" method="POST" style="display: none;"></form>
+                                  <a class="dropdown-item text-danger" href="#" onclick="return confirmDelete('{{ usuario.username }}', '{{ usuario.nombre or usuario.username }}')">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% else %}
+                  <p class="text-center p-3">No hay usuarios para administrar.</p>
+                  {% endif %}
+                </div>
+
+              </div> <!-- Fin .tab-content -->
+            </div> <!-- Fin .card-body -->
+          </div> <!-- Fin .data-table-card -->
+        </div> <!-- Fin #dashboardPage -->
+
+
+        <!-- Inventory Page -->
+        <div id="inventoryPage" class="page-section">
+          <div class="page-header-actions">
+            <h4>Inventario de Motocicletas</h4>
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addMotoModal">
+              <i class="fas fa-plus me-2"></i>Añadir Nueva Moto
+            </button>
+          </div>
+          <div class="data-table-card">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Imagen</th>
+                      <th>Marca</th>
+                      <th>Modelo</th>
+                      <th>Año</th>
+                      <th>Precio/Día</th>
+                      <th>Stock</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for id, moto in motos.items() %}
+                    <tr>
+                      <td>
+                        <img src="{{ url_for('static', filename='img/' ~ moto.imagen) }}" alt="{{ moto.nombre }}" class="inventory-item-img-sm"/>
+                      </td>
+                      <td>{{ moto.marca }}</td>
+                      <td>{{ moto.nombre }}</td>
+                      <td>{{ moto.get('año', 'N/A') }}</td> <!-- Si tienes el año en tu datos, si no muestra N/A -->
+                      <td>${{ '%.2f' % moto.precio_dia }}</td>
+                      <td>{{ moto.get('stock', 'Disponible') }}</td> <!-- si tienes stock -->
+                      <td>
+                        <span class="status-dot bg-success"></span>
+                        <span class="status-text text-success">Disponible</span>
+                      </td>
+                      <td class="action-menu">
+                        <div class="dropdown">
+                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-h"></i></button>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Editar</a></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt"></i> Eliminar</a></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Promotion Page -->
+        <div id="promotionPage" class="page-section">
+          <div class="page-header-actions">
+            <h4>Gestión de Promociones</h4>
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
+              <i class="fas fa-plus me-2"></i>Crear Nueva Promoción
+            </button>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6 col-lg-4">
+              <div class="promotion-card">
+                <div class="d-flex align-items-center mb-2">
+                  <div class="discount-badge">20%</div>
+                  <div>
+                    <h5 class="promo-title mb-0">Descuento Verano</h5>
+                    <small class="text-success d-block">Activa hasta: 31 Ago 2024</small>
+                  </div>
+                </div>
+                <p class="promo-details">Aplica a todas las motos Yamaha. Disfruta de un 20% de descuento.</p>
+                <div class="promo-actions text-end mt-auto">
+                  <button class="btn btn-sm btn-outline-secondary-custom me-1"><i class="fas fa-edit"></i></button>
+                  <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
+                </div>
+              </div>
+            </div>
+             <!-- Añade más cards de promoción aquí -->
+          </div>
+        </div>
+
+        <!-- Admin List Page -->
+        <div id="adminListPage" class="page-section">
+          <div class="page-header-actions">
+            <h4>Lista de Administradores</h4>
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+              <i class="fas fa-user-plus me-2"></i>Añadir Administrador
+            </button>
+          </div>
+          <div class="data-table-card">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Rol</th>
+                      <th>Fecha de Alta</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                     <!-- Ejemplo de fila de admin -->
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="user-avatar-placeholder">AD</div>
+                          <div class="user-name-email">
+                            <div class="name">Admin Principal</div>
+                            <div class="email">admin@example.com</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Super Admin</td>
+                      <td>01 Ene 2023</td>
+                      <td class="action-menu">
+                        <div class="dropdown">
+                          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-h"></i></button>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-edit"></i> Editar Rol</a></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-user-times"></i> Eliminar</a></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profilePage" class="page-section">
+          <div class="profile-header">
+            <div class="profile-avatar">AD</div>
+            <div class="profile-info">
+              <h2 class="name">{{ session['username'] }}</h2>
+              <p class="email">{{ usuario.email }}</p>
+              <span class="badge bg-primary-subtle text-primary-emphasis role-badge">{{ usuario.rol }}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-7">
+              <div class="form-section">
+                <h5>Información Personal</h5>
+                <form id="profileInfoForm">
+                  <div class="row g-3">
+                    <div class="col-md-6"><label for="profileFirstName" class="form-label">Nombre</label><input type="text" class="form-control" id="profileFirstName" value="{{ usuario.nombre }}" required/></div>
+                    <div class="col-md-6"><label for="profileLastName" class="form-label">Apellido</label><input type="text" class="form-control" id="profileLastName" value="{{ usuario.nombre}}" required/></div>
+                    <div class="col-12"><label for="profileEmail" class="form-label">Email</label><input type="email" class="form-control" id="profileEmail" value="{{ usuario.email }}" required/></div>
+                    <div class="col-12 mt-4 text-end"><button type="submit" class="btn btn-primary-custom">Guardar Cambios</button></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="form-section">
+                <h5>Cambiar Contraseña</h5>
+                <form id="changePasswordForm">
+                  <div class="mb-3"><label for="currentPassword" class="form-label">Contraseña Actual</label><input type="password" class="form-control" id="currentPassword" required/></div>
+                  <div class="mb-3"><label for="newPassword" class="form-label">Nueva Contraseña</label><input type="password" class="form-control" id="newPassword" required minlength="6"/></div>
+                  <div class="mb-3"><label for="confirmNewPassword" class="form-label">Confirmar Nueva Contraseña</label><input type="password" class="form-control" id="confirmNewPassword" required/></div>
+                  <div class="mt-4 text-end"><button type="submit" class="btn btn-primary-custom">Actualizar Contraseña</button></div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- FIN SECCIONES DE PÁGINA -->
+      </div> <!-- Fin .page-content -->
+    </div> <!-- Fin .main-content -->
+
+    <!-- MODALES (Ejemplos) -->
+    <div class="modal fade" id="addMotoModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Añadir Moto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Formulario para añadir moto...</div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary-custom" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-primary-custom">Guardar</button></div></div></div></div>
+    <div class="modal fade" id="addPromotionModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Crear Promoción</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Formulario para crear promoción...</div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary-custom" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-primary-custom">Crear</button></div></div></div></div>
+    <div class="modal fade" id="addAdminModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Añadir Admin</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">Formulario para añadir admin...</div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary-custom" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn btn-primary-custom">Añadir</button></div></div></div></div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Función para eliminar (debe estar en el ámbito global si se llama desde onclick HTML)
+      function confirmDelete(username, displayName) {
+        console.log("confirmDelete llamada con:", username, displayName);
+        if (confirm(`¿Seguro que deseas eliminar al usuario '${displayName}' (${username})? Esta acción no se puede deshacer y también eliminará sus alquileres.`)) {
+          const form = document.getElementById(`deleteForm-${username}`);
+          if (form) {
+            console.log("Enviando formulario:", form.id, "Action:", form.action);
+            form.submit();
+          } else {
+            console.error('Error: Formulario de eliminación no encontrado para el usuario:', username);
+            alert('Error: No se pudo encontrar el formulario de eliminación.');
+          }
+        }
+        return false; // Previene la acción por defecto del enlace si se usa como onclick="return confirmDelete(...)"
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const toggleIcon = toggleBtn ? toggleBtn.querySelector('i') : null;
+
+        function saveSidebarState(isCollapsed) {
+          localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+        }
+
+        function loadSidebarState() {
+          return localStorage.getItem('sidebarCollapsed') === 'true';
+        }
+
+        function applySidebarState(isCollapsed) {
+            if (sidebar) {
+                if (isCollapsed) {
+                    sidebar.classList.add('collapsed');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                }
+            }
+            if (toggleIcon) {
+                if (isCollapsed) {
+                    toggleIcon.classList.remove('fa-bars');
+                    toggleIcon.classList.add('fa-times');
+                } else {
+                    toggleIcon.classList.remove('fa-times');
+                    toggleIcon.classList.add('fa-bars');
+                }
+            }
+            // El margin-left del mainContent es manejado por CSS ahora.
+        }
+        
+        // Aplicar estado guardado al cargar
+        const initialStateCollapsed = loadSidebarState();
+        applySidebarState(initialStateCollapsed);
+
+
+        if (toggleBtn && sidebar) {
+          toggleBtn.addEventListener('click', () => {
+            const станетКоллапсированным = !sidebar.classList.contains('collapsed');
+            applySidebarState(станетКоллапсированным);
+            saveSidebarState(станетКоллапсированным);
+
+            // Añadir una clase temporal para la responsividad si se cambia manualmente
+            if (window.innerWidth <= 992) {
+                if (станетКоллапсированным) {
+                    sidebar.classList.remove('expanded-manual');
+                    sidebar.classList.add('collapsed-manual');
+                } else {
+                    sidebar.classList.remove('collapsed-manual');
+                    sidebar.classList.add('expanded-manual');
+                }
+            }
+          });
+        } else {
+            if (!toggleBtn) console.error("Elemento #toggleSidebar no encontrado.");
+            if (!sidebar) console.error("Elemento .sidebar no encontrado.");
+        }
+
+        // Navegación SPA (Single Page Application like)
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav .nav-link[data-page]');
+        const pageSections = document.querySelectorAll('.page-section');
+        const topbarTitleElement = document.querySelector('.topbar .page-title');
+        const topbarSubtitleElement = document.querySelector('.topbar .page-subtitle');
+        const defaultPageId = 'dashboardPage';
+
+        const pageInfo = {
+          dashboardPage: { title: "Dashboard", subtitle: "Resumen general de actividad." },
+          inventoryPage: { title: "Inventario", subtitle: "Gestiona tus motocicletas." },
+          promotionPage: { title: "Promociones", subtitle: "Crea y administra descuentos." },
+          adminListPage: { title: "Lista de Administradores", subtitle: "Gestiona los accesos de administradores." },
+          profilePage: { title: "Perfil de Usuario", subtitle: "Edita tu información personal." }
+        };
+
+        function showPage(pageId) {
+          pageSections.forEach(section => section.classList.remove('active'));
+          const targetPage = document.getElementById(pageId);
+          if (targetPage) targetPage.classList.add('active');
+
+          sidebarLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-page') === pageId) link.classList.add('active');
+          });
+
+          const info = pageInfo[pageId] || pageInfo[defaultPageId];
+          if (topbarTitleElement) topbarTitleElement.textContent = info.title;
+          if (topbarSubtitleElement) topbarSubtitleElement.textContent = info.subtitle;
+        }
+
+        sidebarLinks.forEach(link => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetPageId = this.getAttribute('data-page');
+            if (targetPageId) {
+              window.location.hash = targetPageId; // Esto disparará el 'hashchange'
+            }
+          });
+        });
+        
+        function handleHashChange() {
+            let pageId = window.location.hash.substring(1);
+            if (!pageId || !document.getElementById(pageId)) {
+                pageId = defaultPageId;
+                // Opcional: si el hash es inválido, actualiza el hash a la página por defecto
+                // window.location.hash = defaultPageId; 
+                // Cuidado con esto, puede causar bucles si defaultPageId no existe.
+            }
+            showPage(pageId);
+        }
+
+        window.addEventListener('hashchange', handleHashChange);
+        // Cargar la página inicial basada en el hash o por defecto
+        handleHashChange();
+
+
+        // Lógica para el theme toggle (si la implementas)
+        // const themeToggleButtons = document.querySelectorAll('.theme-toggle button');
+        // themeToggleButtons.forEach(button => { /* ... */ });
+
+        // Lógica para manejar envíos de formularios de modales (ejemplo básico)
+        // document.getElementById('addMotoForm')?.addEventListener('submit', function(e) {
+        //    e.preventDefault(); alert('Formulario de moto enviado (simulado)');
+        //    bootstrap.Modal.getInstance(document.getElementById('addMotoModal'))?.hide();
+        // });
+      });
+    </script>
+  </body>
+</html>
